@@ -209,96 +209,97 @@
     
     <!-- Custom JS for additional functionality -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const carouselElement = document.getElementById('imageCarousel');
-            const prevButton = document.getElementById('prevButton');
-            const nextButton = document.getElementById('nextButton');
-            let direction = 'left'; // Changed default direction to 'left'
-            
-            // Initialize the carousel with options
-            const carousel = new bootstrap.Carousel(carouselElement, {
-                interval: 5000,  // Auto-slide interval (5 seconds)
-                wrap: true,      // Whether the carousel should cycle continuously
-                touch: true      // Whether the carousel should support left/right swipe
-            });
-            
-            // Function to prepare next slide with correct animation
-            function prepareNextSlide() {
-                // Get all slides
-                const allSlides = document.querySelectorAll('.carousel-item');
+       document.addEventListener('DOMContentLoaded', function() {
+    const carouselElement = document.getElementById('imageCarousel');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    let direction = 'left'; // Changed default direction to 'left'
+    
+    // Initialize the carousel with options
+    const carousel = new bootstrap.Carousel(carouselElement, {
+        interval: 5000,  // Auto-slide interval (5 seconds)
+        wrap: true,      // Whether the carousel should cycle continuously
+        touch: true      // Whether the carousel should support left/right swipe
+    });
+    
+    // Function to prepare next slide with correct animation
+    function prepareNextSlide() {
+        // Get all slides
+        const allSlides = document.querySelectorAll('.carousel-item');
+        
+        // Remove animation classes from all slides except active
+        allSlides.forEach(slide => {
+            if (!slide.classList.contains('active')) {
+                slide.classList.remove('slide-from-left', 'slide-from-right');
                 
-                // Remove animation classes from all slides except active
-                allSlides.forEach(slide => {
-                    if (!slide.classList.contains('active')) {
-                        slide.classList.remove('slide-from-left', 'slide-from-right');
-                        
-                        // Add the appropriate animation class based on direction
-                        if (direction === 'left') {
-                            slide.classList.add('slide-from-left');
-                        } else {
-                            slide.classList.add('slide-from-right');
-                        }
-                    }
-                });
-            }
-            
-            // Add event listeners for button clicks
-            prevButton.addEventListener('click', function() {
-                direction = 'left';
-                prepareNextSlide();
-            });
-            
-            nextButton.addEventListener('click', function() {
-                direction = 'right';
-                prepareNextSlide();
-            });
-            
-            // Enhanced touch swipe support
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            carouselElement.addEventListener('touchstart', function(event) {
-                touchStartX = event.changedTouches[0].screenX;
-            }, false);
-            
-            carouselElement.addEventListener('touchend', function(event) {
-                touchEndX = event.changedTouches[0].screenX;
-                handleSwipe();
-            }, false);
-            
-            function handleSwipe() {
-                const swipeThreshold = 50;
-                if (touchEndX < touchStartX - swipeThreshold) {
-                    // Swipe left, go to next slide
-                    direction = 'right';
-                    prepareNextSlide();
-                    carousel.next();
-                }
-                if (touchEndX > touchStartX + swipeThreshold) {
-                    // Swipe right, go to previous slide
-                    direction = 'left';
-                    prepareNextSlide();
-                    carousel.prev();
+                // Add the appropriate animation class based on direction
+                // CHANGED: Reversed the animation direction
+                if (direction === 'left') {
+                    slide.classList.add('slide-from-right'); // Changed from 'slide-from-left'
+                } else {
+                    slide.classList.add('slide-from-left'); // Changed from 'slide-from-right'
                 }
             }
-            
-            // Listen for slide event (before slide changes)
-            carouselElement.addEventListener('slide.bs.carousel', function() {
-                // This ensures slides are prepared with the right animation
-                prepareNextSlide();
-            });
-            
-            // For automatic sliding, use left direction by default
-            carouselElement.addEventListener('slid.bs.carousel', function() {
-                // After sliding completes, set default direction to left for auto-sliding
-                if (!prevButton.matches(':hover') && !nextButton.matches(':hover')) {
-                    direction = 'left'; // Changed to 'left'
-                }
-            });
-            
-            // Initialize - make sure all non-active slides have the default left animation class
-            prepareNextSlide();
         });
+    }
+    
+    // Add event listeners for button clicks
+    prevButton.addEventListener('click', function() {
+        direction = 'left';
+        prepareNextSlide();
+    });
+    
+    nextButton.addEventListener('click', function() {
+        direction = 'right';
+        prepareNextSlide();
+    });
+    
+    // Enhanced touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    carouselElement.addEventListener('touchstart', function(event) {
+        touchStartX = event.changedTouches[0].screenX;
+    }, false);
+    
+    carouselElement.addEventListener('touchend', function(event) {
+        touchEndX = event.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe left, go to next slide
+            direction = 'right';
+            prepareNextSlide();
+            carousel.next();
+        }
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe right, go to previous slide
+            direction = 'left';
+            prepareNextSlide();
+            carousel.prev();
+        }
+    }
+    
+    // Listen for slide event (before slide changes)
+    carouselElement.addEventListener('slide.bs.carousel', function() {
+        // This ensures slides are prepared with the right animation
+        prepareNextSlide();
+    });
+    
+    // For automatic sliding, use left direction by default
+    carouselElement.addEventListener('slid.bs.carousel', function() {
+        // After sliding completes, set default direction to left for auto-sliding
+        if (!prevButton.matches(':hover') && !nextButton.matches(':hover')) {
+            direction = 'left';
+        }
+    });
+    
+    // Initialize - make sure all non-active slides have the default left animation class
+    prepareNextSlide();
+});
     </script>
 </body>
 </html>
